@@ -10,12 +10,18 @@ const PORT = config.get('port') ?? 5000 // Берем наш порт из json 
 
 async function start() {
   try {
-    await mongoose.connect(config.get('mongoUri'), { // Подкючаемся к mongodb, берем переменную из нашего конфига с помощью метода get, и вторым параметром передаем объект с необходимыми опциями для успешной работы метода connect 
+    await mongoose.connect(config.get('mongoUri'), {
+      // Подкючаемся к mongodb, берем переменную из нашего конфига с помощью метода get, и вторым параметром передаем объект с необходимыми опциями для успешной работы метода connect
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
     })
-    app.listen(PORT, () => { // Запускаем сервер на PORT
+    app.get('/', (req, res) => {
+      // Тестовая функция
+      res.send('<h1>Server is running</h1>')
+    })
+    app.listen(PORT, () => {
+      // Запускаем сервер на PORT
       console.log(`App has been started on port ${PORT}...`) // Выводим оповещение в консоль
     })
   } catch (e) {
@@ -24,4 +30,4 @@ async function start() {
   }
 }
 
-start()
+start() // Запускаем нашу функцию
