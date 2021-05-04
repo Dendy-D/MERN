@@ -4,9 +4,11 @@ const mongoose = require('mongoose') // Подключаемся к mongodb
 
 const app = express() // Создаем наш сервер
 
-app.use('/api/auth', require('./routes/auth.routes'))
+app.use(express.json({ extended: true }))
 
-const PORT = config.get('port') ?? 5000 // Берем наш порт из json где хранятся константы (config) и с помощью метода get берем нашу необходимую константу и если ее там нет то по дефолту ставим 5000
+app.use('/api/auth', require('./routes/auth.routes')) // Подключаем наши роуты
+
+const PORT = config.get('port') || 5000 // Берем наш порт из json где хранятся константы (config) и с помощью метода get берем нашу необходимую константу и если ее там нет то по дефолту ставим 5000
 
 async function start() {
   try {

@@ -6,6 +6,8 @@ const bcrypt = require('bcryptjs') // Подключаем библиотеку 
 const User = require('../models/User') // Подключаем нашу модель User из файла User.js
 const { check, validationResult } = require('express-validator') // Подклчаем метод check и функцию validationResult из библиотеки express-validator для валидации данных
 
+const util = require('util')
+
 // /api/auth/register
 router.post(
   '/register',
@@ -20,9 +22,12 @@ router.post(
   ],
   async (req, res) => {
     try {
+      // console.log('Body:' + req.body)
+      console.log(`Body: ${util.inspect(req.body, false, null)}`)
+
       const errors = validationResult(req) // Обрабатываем нашу валидацию
 
-      if (!errors.isEmpty) {
+      if (!errors.isEmpty()) {
         // Проверка на успешное завершение валидации
         return res.status(400).json({
           // Отправляем ошибку на front-end
@@ -31,9 +36,9 @@ router.post(
         })
       }
 
-      const { email: email, password: password } = req.body // Получаем email и password из объекта req.body
+      const { email, password } = req.body // Получаем email и password из объекта req.body
 
-      const candidate = await User.findOne({ email: email }) // Проверяем есть ли email в базе
+      const candidate = await User.findOne({ email }) // Проверяем есть ли email в базе
 
       if (candidate) {
         return res.status(400).json({ message: 'This User already existing' }) // Если такой email уже есть мы викидываем ошибку и стопаем скрипт
@@ -63,7 +68,7 @@ router.post(
     try {
       const errors = validationResult(req) // Обрабатываем нашу валидацию
 
-      if (!errors.isEmpty) {
+      if (!errors.isEmpty()) {
         // Проверка на успешное завершение валидации
         return res.status(400).json({
           // В случае ошибки, выкидываем ее в front-end
@@ -95,8 +100,6 @@ router.post(
       })
 
       res.json({ token, userId: user.id }) // Отвечаем пользователю (статус не указываем, так как по умолчанию он 200) и передаем token и userId
-
-      res.status(500).json({ message: 'Something wrong' })
     } catch (e) {
       res.status(500).json({ message: 'Something wrong' }) // Если что то пошло не так, выкенется ошибка
     }

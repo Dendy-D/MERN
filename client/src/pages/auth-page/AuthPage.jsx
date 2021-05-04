@@ -1,8 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useHttp } from '../../hooks/http.hook'
 
 import './auth.css'
 
 const AuthPage = () => {
+  const { loading, request } = useHttp()
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+  })
+
+  const changeHandler = (event) => {
+    // Обрабатываем нашу форму
+    setForm({ ...form, [event.target.name]: event.target.value }) // Из за того что это объект, мы сначала разворачиваем наш объект form с помощью оператора spred. И потом определяем какое именно поле мы меняем
+  }
+
+  const registerHandler = async () => {
+    try {
+      const data = await request('/api/auth/register', 'POST', { ...form })
+      console.log(data)
+    } catch (e) {}
+  }
+
   return (
     <div className='row'>
       <div className='col s6 offset-s3'>
@@ -19,6 +38,7 @@ const AuthPage = () => {
                 type='email'
                 className='validate'
                 name='email'
+                onChange={changeHandler}
               />
               <label htmlFor='email'>Email</label>
             </div>
@@ -30,13 +50,20 @@ const AuthPage = () => {
                 type='password'
                 className='validate'
                 name='password'
+                onChange={changeHandler}
               />
               <label htmlFor='email'>Password</label>
             </div>
           </div>
           <div className='card-action'>
-            <button className='btn  sign-in'>Sign in</button>
-            <button className='btn light-blue lighten-2 black-text sign-up'>
+            <button className='btn  sign-in' disabled={loading}>
+              Sign in
+            </button>
+            <button
+              className='btn light-blue lighten-2 black-text sign-up'
+              onClick={registerHandler}
+              disabled={loading}
+            >
               Sign up
             </button>
           </div>
