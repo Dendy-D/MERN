@@ -1,14 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { AuthContext } from '../../context/AuthContext'
 import { useHttp } from '../../hooks/http.hook'
+import { useMessage } from '../../hooks/message.hook'
 
 import './auth.css'
 
 const AuthPage = () => {
-  const { loading, request } = useHttp()
+  const auth = useContext(AuthContext)
+  const message = useMessage()
+  const { loading, request, error, clearError } = useHttp()
   const [form, setForm] = useState({
     email: '',
     password: '',
   })
+
+  useEffect(() => {
+    message(error)
+    clearError()
+  }, [error, message, clearError])
+
+  useEffect(() => {
+    window.M.updateTextFields()
+  }, [])
 
   const changeHandler = (event) => {
     // Обрабатываем нашу форму
@@ -18,7 +31,14 @@ const AuthPage = () => {
   const registerHandler = async () => {
     try {
       const data = await request('/api/auth/register', 'POST', { ...form })
-      console.log(data)
+      message(data.message)
+    } catch (e) {}
+  }
+
+  const loginHandler = async () => {
+    try {
+      const data = await request('/api/auth/login', 'POST', { ...form })
+      auth.login(data.token, data.userId)
     } catch (e) {}
   }
 
@@ -26,7 +46,7 @@ const AuthPage = () => {
     <div className='row'>
       <div className='col s6 offset-s3'>
         {/*Если всего 12 столбцов, а содержимое 6 столбцов, то если мы сместим все на 3 столбца это приведет к центрированию содержимого*/}
-        <h1>Hello</h1>
+        <h1>Shortening links</h1>
         <div className='card light-blue lighten-2'>
           <div className='card-content white-text'>
             <span className='card-title head'>Authorization</span>
@@ -38,6 +58,7 @@ const AuthPage = () => {
                 type='email'
                 className='validate'
                 name='email'
+                // value={form.email}
                 onChange={changeHandler}
               />
               <label htmlFor='email'>Email</label>
@@ -50,13 +71,18 @@ const AuthPage = () => {
                 type='password'
                 className='validate'
                 name='password'
+                // value={form.password}
                 onChange={changeHandler}
               />
               <label htmlFor='email'>Password</label>
             </div>
           </div>
           <div className='card-action'>
-            <button className='btn  sign-in' disabled={loading}>
+            <button
+              className='btn  sign-in'
+              disabled={loading}
+              onClick={loginHandler}
+            >
               Sign in
             </button>
             <button

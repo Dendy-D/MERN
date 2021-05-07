@@ -7,6 +7,8 @@ const app = express() // Создаем наш сервер
 app.use(express.json({ extended: true }))
 
 app.use('/api/auth', require('./routes/auth.routes')) // Подключаем наши роуты
+app.use('/api/link', require('./routes/link.routes'))
+app.use('/t', require('./routes/redirect.routes'))
 
 const PORT = config.get('port') || 5000 // Берем наш порт из json где хранятся константы (config) и с помощью метода get берем нашу необходимую константу и если ее там нет то по дефолту ставим 5000
 

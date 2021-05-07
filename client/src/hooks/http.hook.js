@@ -20,8 +20,6 @@ export const useHttp = () => {
           headers,
         })
 
-        console.log(response)
-
         const data = await response.json()
 
         if (!response.ok) {
@@ -40,7 +38,7 @@ export const useHttp = () => {
     []
   )
 
-  const clearError = () => setError(null)
+  const clearError = useCallback(() => setError(null), [])
 
   return { loading, request, error, clearError }
 }

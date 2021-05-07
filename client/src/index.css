@@ -1,1 +1,7 @@
 @import '~materialize-css/dist/css/materialize.min.css';
+
+.reloader {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+}

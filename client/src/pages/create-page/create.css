@@ -1,0 +1,8 @@
+.row > .create {
+  padding: 20px;
+}
+.row .min-header {
+  color: #1e88e5;
+  text-align: center;
+  padding-right: 50px;
+}

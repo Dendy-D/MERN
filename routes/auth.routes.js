@@ -87,7 +87,7 @@ router.post(
       }
 
       //Проверяем совпадают ли пароли, метод compare позволяет сравнивать захешированные пароли
-      const isMatch = await bcript.compare(password, user.password)
+      const isMatch = await bcrypt.compare(password, user.password)
 
       if (!isMatch) {
         // В случае неверного пароля выкидываем ошибку в front-end
