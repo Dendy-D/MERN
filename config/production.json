@@ -1,0 +1,6 @@
+{
+  "port": 5000,
+  "jwtSecret": "maximal secret string",
+  "mongoUri": "mongodb+srv://Daniil:89143978701@cluster0.jtoak.mongodb.net/app?retryWrites=truew=majority",
+  "baseUrl": "http://localhost:5000"
+}

@@ -1,5 +1,6 @@
 const express = require('express') // Подключаем express
 const config = require('config') // Библиотека наших констант (создаем json файл и оттуда берем наши константы с помощью метода config.get)
+const path = require('path')
 const mongoose = require('mongoose') // Подключаемся к mongodb
 
 const app = express() // Создаем наш сервер
@@ -9,6 +10,14 @@ app.use(express.json({ extended: true }))
 app.use('/api/auth', require('./routes/auth.routes')) // Подключаем наши роуты
 app.use('/api/link', require('./routes/link.routes'))
 app.use('/t', require('./routes/redirect.routes'))
+
+if (process.env.NODE_ENV === 'production') {
+  app.use('/', express.static(path.join(__dirname, 'client', 'build')))
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+  })
+}
 
 const PORT = config.get('port') || 5000 // Берем наш порт из json где хранятся константы (config) и с помощью метода get берем нашу необходимую константу и если ее там нет то по дефолту ставим 5000
 
